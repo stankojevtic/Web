@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="css/korisnik.css">
+    <link rel="stylesheet" href="css/normalize.css">
+	<script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/jquery.toastmessage.js" type="text/javascript"></script>
+     <script type="text/javascript" src="js/admin.js"></script>
+	<link href="css/jquery.toastmessage.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="indexCSS.css">
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css">
+	<title>Admin</title>
+	<style type="text/css">
+   		#odjavaBtn {  
+			margin-top: 4px;
+			margin-right: 20px;
+			float : right;
+    		width: 110px;
+		}
+   </style>
+   
+   <script>
+        $(document).ready(function()
+	    {
+        	proveraLogin();
+        	
+        	prikaziProzivode();
+
+         	popuniTabeluProizvoda();
+         	popuniTabeluProdavnica();
+         	popuniTabeluKategorija();
+         	popuniTabeluZalbi();
+         	popuniKategorijeCombo();
+         	popuniTabeluDostavljaca();
+         	popuniTabeluKorisnika();
+         	
+         	
+          	popuniProdavniceCombo();
+			popuniProdavceCombo();
+          	
+        });
+        
+      </script>
+
+</head>
+<body>
+	<div class="form-group">
+   		<span id="odjavaBtn">
+   			
+			<button type="button"  class="btn btn-info"   onclick="odjava()">
+				<span class="glyphicon glyphicon-log-out">
+				</span>
+				Odjavi se 
+			</button>
+			<strong><span id="prodavacNaslov"></span></strong>
+		</span>
+	</div >
+	
+	<nav id="nav-2">
+	  <a class="link-3" onclick="prikaziProzivode()">Proizvodi</a>
+      <a class="link-3"  onclick="prikaziProdavnice()">Prodavnice</a>
+      <a class="link-3" onclick="prikaziKategorije()">Kategorije</a>
+      <a class="link-3" onclick="prikaziDostavljace()">Dostavljači</a>
+      <a class="link-3" onclick="prikaziZalbe()">Žalbe</a>
+      <a class="link-3" onclick="prikaziKorisnike()">Korisnici</a>
+    </nav>
+    
+    <div class="container" id="prodavniceDiv" style="background: transparent;border: 0px;">
+     	<div class="alert alert-danger" id="prodavnicePrazne">Nema prodavnica za ovog prodavca :(</div>
+     	<div id="pretragaProdavniceDiv">
+     			<div class="form-inline" style="text-align: center;color:white;">
+						<input type="checkbox" id="cbProdavnicaNaziv" value="Naziv"><strong> Naziv</strong>
+						<input type="checkbox" id="cbProdavnicaOcena" value="Ocena"><strong>Ocena</strong>
+						<input type="checkbox" id="cbZemlja" value="Zemlja"><strong>Država</strong>
+				</div>
+				<div class="form-inline" style="text-align: center;color:white;"> 
+					<span ><strong>Unesite filter:</strong></span><br><input type="text" id="prodavnicaPretraga" class="form-control">					
+				</div>
+				<div class="form-inline " style="text-align: center;">		
+					<button type="button" class="btn btn-primary active " onclick="pretragaProdavnice()" id="btnPretragaProdavnica"> 			
+					<span class="glyphicon glyphicon-search"></span>
+					Pretraga</button><br><br>
+					<button type="button" class="btn btn-success active" id="dodajProdavnicuBtn" onClick="izmeniProdavnicu(this)"> 			
+					<span class="glyphicon glyphicon-plus"></span>
+					Dodaj novu prodavnicu</button>
+				</div>
+					
+					
+		</div>
+     	<table class="rules" id="tabelaProdavnice" >
+	        <thead>
+	          <tr>
+	            <th>
+	              Šifra prodavnice
+	            </th>
+	            <th>
+	              Naziv prodavnice
+	            </th>
+	            <th  width="70px">
+              		Adresa
+            	</th>
+	             <th>
+	              Država
+	            </th>
+	            <th>
+	              Email
+	            </th>
+	             <th width="65px">
+	              Ocena
+	            </th>
+	            <th width="90px">
+	              Odgovorni Prodavac 
+	            </th>
+	            
+	            <th >
+	              Telefon
+	            </th>
+	            <th >
+	              Izmena
+	            </th>
+	            <th >
+	              Brisanje
+	            </th>
+	          </tr>
+	        </thead>
+	      	 <tbody>
+	       	</tbody>
+	        <tfoot>
+	          <tr>
+	            <td colspan="8"></td>
+	          </tr>
+	        </tfoot>
+	      </table>
+	      <div id="izmenaProdavniceDiv"  class="main-login main-center" style="background: transparent; width: 400px">
+	      	<div class="form-horizontal">
+	      		<div class="form-group">
+							<label for="sifraProdavnice" class="cols-sm-2 control-label" style="color: white;">Šifra</label>
+							<div>
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-barcode" aria-hidden="true" ></i></span>
+									<input type="text"  class="form-control" name="sifraProdavnice" id="sifraProdavnice"  placeholder="Unesite šifru prodavnice" readonly/>
+								</div>
+							</div>
+						</div>
+                        
+                        <div class="form-group">
+							<label for="nazivProdavnice" class="cols-sm-2 control-label" style="color: white;">Naziv </label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-text-width" aria-hidden="true"></i></span>
+									<input type="text"  class="form-control" name="nazivProdavnice" id="nazivProdavnice"  placeholder="Unesite naziv prodavnice"/>
+								</div>
+							</div>
+						</div>
+                        
+						<div class="form-group">
+							<label for="adresaProdavnice" class="cols-sm-2 control-label" style="color: white;">Adresa</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-home" aria-hidden="true"></i></span>
+									<input type="text"  class="form-control" name="adresaProdavnice" id="adresaProdavnice"  placeholder="Unesite adresu prodavnice"/>
+								</div>
+							</div>
+						</div>
+                        
+                        <div class="form-group">
+							<label for="drzavaProdavnice" class="cols-sm-2 control-label" style="color: white;">Država</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-globe" aria-hidden="true"></i></span>
+									<input type="text"  class="form-control" name="drzavaProdavnice" id="drzavaProdavnice"  placeholder="Unesite državu prodavnice"/>
+								</div>
+							</div>
+						</div>
+						
+						<label  class="cols-sm-2 control-label" style="color: white;" >Prodavac</label>
+	                    <div class="form-group" id="prodavacDiv">
+								<select id="prodavacSelect" >
+									<option>Izaberite prodavca...</option>
+								</select>
+						</div>
+						
+                        
+                        <div class="form-group">
+							<label for="emailProdavnice" class="cols-sm-2 control-label" style="color: white;">Email</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-envelope" aria-hidden="true"></i></span>
+									<input type="email"  class="form-control" name="emailProdavnice" id="emailProdavnice"  placeholder="Unesite email prodavnice"/>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="ocenaProdavnice" class="cols-sm-2 control-label" style="color: white;">Ocena</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-star" aria-hidden="true"></i></span>
+									<input type="text"  class="form-control" name="ocenaProdavnice" id="ocenaProdavnice" readonly/>
+								</div>
+							</div>
+						</div>
+                        
+                        <div class="form-group">
+							<label for="telefonProdavnice" class="cols-sm-2 control-label" style="color: white;">Telefon</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-phone" aria-hidden="true"></i></span>
+									<input type="number"   class="form-control" name="telefonProdavnice" id="telefonProdavnice"  placeholder="Unesite telefon prodavnice"/>
+								</div>
+							</div>
+						</div>
+						<br>
+						<div style="text-align: center;" >
+						<button type="button" class="btn btn-success active " id="sacuvanProdavnicuBtn" name="dodajProdavnicu" onClick="sacuvajIzmenuProdavnice(this)" > 			
+							<span class="glyphicon glyphicon-ok"></span>
+						Sačuvaj</button>
+						</div>	
+					</div>
+	      </div>
+	      
+	      
+     </div>
+     
+    <div class="container" id="proizvodiDiv" style="background: transparent;border: 0px;">
+    	<div class="centriran" id="divPretragaProizvoda">
+				
+				<div class="form-inline" style="text-align: center;color: white;"><strong>
+						<input type="checkbox" id="cbNaziv" value="Naziv"> Naziv
+						<input type="checkbox" id="cbKolicina" value="Količina"> KolicinaUMagacinu
+						<input type="checkbox" id="cbKategorija" value="Kategorija">Kategorija
+						<input type="checkbox" id="cbZemlja" value="Zemlja">Zemlja proizvodnje
+						<input type="checkbox" id="cbOcena" value="Ocena">Ocena
+						<input type="checkbox" id="cbBoja" value="Boja">Boja
+						<input type="checkbox" id="cbBrojRecenzija" value="BrojRecenzija">Broj recenzija<br></strong>
+				</div>
+				<div class="form-inline text-primary" style="text-align: center;color: white;"><strong>
+					<span >Cena od:</span> 	<input type="text" id="proizvodCenaOd" class="form-control">
+					<span >do:</span>			<input type="text" id="proizvodCenaDo" class="form-control"></strong>
+					
+				</div >	
+				<div class="form-inline" style="text-align: center;color: white;"> <strong>
+					<span >Unesite filter:</span><input type="text" id="ostaloPretraga" class="form-control">	</strong>				
+				</div>
+				<div class="form-inline " style="text-align: center;">		
+					<button type="button" class="btn btn-primary active " onClick="pretragaProizvodi()" id="btnPretragaKN"> 			
+					<span class="glyphicon glyphicon-search"></span>
+					Pretraga</button>
+					<br><br>
+					<button type="button" class="btn btn-success active" id="dodajProizvodBtn" onClick="dodajIzmeniProizvod(this)"> 			
+					<span class="glyphicon glyphicon-plus"></span>
+					Dodaj novi proizvod</button>
+					
+				</div>
+				
+<!-- 				DODAJ PROIZVOD -->
+			</div>
+		<div id="dodajIzmeniProizvodDiv" class="main-login main-center" style="background: transparent; width: 400px;">
+					<div class="form-horizontal">
+		      		<div class="form-group">
+								<label for="sifraPro" class="cols-sm-2 control-label" style="color: white;">Šifra</label>
+								<div>
+									<div class="input-group">
+										<span class="input-group-addon"><i class="glyphicon glyphicon-barcode" aria-hidden="true" ></i></span>
+										<input type="text"  class="form-control" name="sifraPro" id="sifraPro" placeholder="Unesite šifru proizvoda"/>
+									</div>
+								</div>
+							</div>
+	                        
+                        <div class="form-group">
+							<label for="nazivPro" class="cols-sm-2 control-label" style="color: white;">Naziv </label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-text-width" aria-hidden="true"></i></span>
+									<input type="text"  class="form-control" name="nazivPro" id="nazivPro"  placeholder="Unesite naziv proizvoda"/>
+								</div>
+							</div>
+						</div>
+                        
+						<div class="form-group">
+							<label for="proizvodjacPro" class="cols-sm-2 control-label" style="color: white;">Proizvođač</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-cog" aria-hidden="true"></i></span>
+									<input type="text"  class="form-control" name="proizvodjacPro" id="proizvodjacPro"  placeholder="Unesite proizvođača"/>
+								</div>
+							</div>
+						</div>
+						<label  class="cols-sm-2 control-label" style="color: white;">Kategorija</label>
+                       	<div class="form-group" id="kategorijaProDiv">
+							<select id="kategorijaProSelect" >
+								<option>Izaberite kategoriju</option>
+							</select>
+						</div>
+                         <label  class="cols-sm-2 control-label" style="color: white;">Prodavnica</label>
+                       	<div class="form-group" id="prodavnicaProDiv">
+							<select id="prodavnicaProSelect" >
+								<option>Izaberite prodavnicu</option>
+							</select>
+						</div>
+                        
+                        <div class="form-group">
+							<label for="cenaPro" class="cols-sm-2 control-label" style="color: white;">Cena</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-usd" aria-hidden="true"></i></span>
+									<input type="number"  class="form-control" name="cenaPro" id="cenaPro"  placeholder="Unesite cenu proizvoda"/>
+								</div>
+							</div>
+						</div>
+                        
+                        <div class="form-group">
+							<label for="magacinPro" class="cols-sm-2 control-label" style="color: white;">Količina u magacinu</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></i></span>
+									<input type="number"  class="form-control" name="magacinPro" id="magacinPro"  placeholder="Unesite količinu u magacinu"/>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="bojaPro" class="cols-sm-2 control-label" style="color: white;">Boja</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-pencil" aria-hidden="true"></i></span>
+									<input type="text"  class="form-control" name="bojaPro" id="bojaPro" placeholder="Unesite boju proizvoda"/>
+								</div>
+							</div>
+						</div>
+                        
+                        <div class="form-group">
+							<label for="dimenzijePro" class="cols-sm-2 control-label" style="color: white;">Dimenzije u m2</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-fullscreen" aria-hidden="true"></i></span>
+									<input type="number"   class="form-control" name="dimenzijePro" id="dimenzijePro"  placeholder="Unesite dimenzije proizvoda"/>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="tezinaPro" class="cols-sm-2 control-label" style="color: white;">Težina u kg</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-oil" aria-hidden="true"></i></span>
+									<input type="number"   class="form-control" name="tezinaPro" id="tezinaPro"  placeholder="Unesite težinu proizvoda"/>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="zemljaPro" class="cols-sm-2 control-label" style="color: white;">Zemlja proizvodnje</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-globe" aria-hidden="true"></i></span>
+									<input type="text"   class="form-control" name="zemljaPro" id="zemljaPro"  placeholder="Unesite težinu proizvoda"/>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="slikaPro" class="cols-sm-2 control-label" style="color: white;">Slika</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									
+									<input type="file"   class="form-control" name="slikaPro" id="slikaPro" onchange="uploadSlika(this.files)" readonly placeholder="Klik na dugme za upload"/>
+									<span class="input-group-addon" style="cursor: pointer;"><i class="glyphicon glyphicon-upload" aria-hidden="true"></i></span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="videoPro" class="cols-sm-2 control-label" style="color: white;">Video</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									
+									<input type="text"   class="form-control" name="videoPro" id="videoPro"  placeholder="Kopirajte embed link videa"/>
+									<span class="input-group-addon" style="cursor: pointer;"><i class="glyphicon glyphicon-upload" aria-hidden="true"></i></span>
+								</div>
+							</div>
+						</div>
+						
+						<br>
+						<div style="text-align: center;" >
+						<button type="button" class="btn btn-success active " id="dodajIzmeni" name="dodaj" onClick="sacuvajDodajIzmeniPro(this)" > 			
+							<span class="glyphicon glyphicon-ok"></span>
+						Sačuvaj</button>
+						</div>	
+					</div>
+				</div>
+      <table class="rules" id="tabelaPrikaz">
+        <thead>
+          <tr>
+            <th>
+              Šifra<br>proizvoda
+            </th>
+            <th>
+              Naziv<br>proizvoda
+            </th>
+            <th>
+              Naziv<br>proizvođača
+            </th>
+            <th>
+              Kategorija<br>proizvoda
+            </th>
+            <th>
+              Prodavnica
+            </th>
+             <th width="65px">
+              Cena
+            </th>
+            <th >
+              Popust
+            </th>
+             <th width="80px">
+              Količina u magacinu
+            </th>
+            <th>
+             Izmena
+            </th>
+            <th>
+             Brisanje
+            </th>
+            
+          </tr>
+        </thead>
+        <tbody >
+          
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="7"></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <!--     KATEGORIJE  -->
+    <div class="container" id="kategorijeDiv" style="background: transparent;border: 0px;width:200px">
+    	<div class="alert alert-danger" id="kategorijePrazne">Nema kategorija za prikaz...</div>
+    	<div id="btnKategorijaDiv" class="form-inline " style="text-align: center;">	
+    		<button type="button" class="btn btn-success active" id="dodajKategorijuBtn" onClick="dodajIzmeniKategoriju(this)"> 			
+					<span class="glyphicon glyphicon-plus"></span>
+					Dodaj novu kategoriju</button>
+		</div>
+    	<table class="rules" id="tabelaKategorije">
+        <thead>
+          <tr>
+            <th width="20%">
+              Naziv<br>kategorije
+            </th>
+            <th>
+              Opis
+            </th>
+              <th>
+              Nad kategorija
+            </th>
+            <th width="10%">
+              Izmeni
+            </th>
+            <th width="10%">
+              Obriši
+            </th>
+          </tr>
+        </thead>
+        <tbody >
+          
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="7"></td>
+          </tr>
+        </tfoot>
+      </table>
+      <div id="dodajIzmeniKategorijuDiv" class="main-login main-center" style="background: transparent; width: 400px;border: 0px;">
+      				<div class="form-group">
+							<label for="nazivKat" class="cols-sm-2 control-label" style="color: white;">Naziv </label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-text-width" aria-hidden="true"></i></span>
+									<input type="text"  class="form-control" name="nazivKat" id="nazivKat"  placeholder="Unesite naziv kategorije"/>
+								</div>
+							</div>
+						</div>
+                        
+						<div class="form-group">
+							<label for="opisKat" class="cols-sm-2 control-label" style="color: white;">Opis</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-cog" aria-hidden="true"></i></span>
+									<input type="text"  class="form-control" name="opisKat" id="opisKat"  placeholder="Unesite opis kategorije"/>
+								</div>
+							</div>
+						</div>
+						<label  class="cols-sm-2 control-label" style="color: white;">Nad kategorija</label>
+                       	<div class="form-group" id="kategorijaPodDiv">
+							<select id="kategorijaPodSelect" >
+								<option>Izaberite kategoriju</option>
+							</select>
+						</div>
+						<div style="text-align: center;" >
+						<button type="button" class="btn btn-success active " id="sacuvajKategorijuBtn" name="dodaj" onClick="sacuvajDodajIzmeniKat(this)" > 			
+							<span class="glyphicon glyphicon-ok"></span>
+						Sačuvaj</button>
+						</div>	
+      </div>
+      
+    </div>
+<!--     DOSTAVLJACI  -->
+    <div class="container" id="dostavljaciDiv" style="background: transparent;border: 0px;">
+    	<div class="alert alert-danger" id="dostavljaciPrazni">Nema dostavljača za prikaz...</div>
+    	<div id="btnDostavljacDiv" class="form-inline " style="text-align: center;">	
+    		<button type="button" class="btn btn-success active" id="dodajDostavljacBtn" onClick="dodajIzmeniDostavljaca(this)"> 			
+					<span class="glyphicon glyphicon-plus"></span>
+					Dodaj novog dostavljača</button>
+		</div>
+    	<table class="rules" id="tabelaDostavljaci">
+        <thead>
+          <tr>
+            <th width="10%">
+              Šifra<br>dostavljača
+            </th>
+            <th width="10%">
+              Naziv<br>dostavljača
+            </th>
+            <th width="25%">
+              Opis
+            </th>
+            <th>
+              Države<br>poslovanja
+            </th>
+            <th>
+              Trajanje<br>dostave
+            </th>
+            <th>
+              Tarife<br>za dimenzije
+            </th>
+            <th>
+              Tarife<br>težinu
+            </th>
+
+            <th width="10%">
+              Izmeni
+            </th>
+            <th width="10%">
+              Obriši
+            </th>
+          </tr>
+        </thead>
+        <tbody >
+          
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="7"></td>
+          </tr>
+        </tfoot>
+      </table>
+      
+      <div id="dodajIzmeniDostavljacaDiv" class="main-login main-center" style="background: transparent; width: 400px;border: 0px;">
+      				<div class="form-group">
+							<label for="sifraDos" class="cols-sm-2 control-label" style="color: white;">Šifra </label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-barcode" aria-hidden="true"></i></span>
+									<input type="text"  class="form-control" name="sifraDos" id="sifraDos"  placeholder="Unesite šifru dotavljaca"/>
+								</div>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label for="nazivDos" class="cols-sm-2 control-label" style="color: white;">Naziv </label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-text-width" aria-hidden="true"></i></span>
+									<input type="text"  class="form-control" name="nazivDos" id="nazivDos"  placeholder="Unesite naziv dotavljaca"/>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="opisDos" class="cols-sm-2 control-label" style="color: white;">Opis </label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-star" aria-hidden="true"></i></span>
+									<input type="text"  class="form-control" name="opisDos" id="opisDos"  placeholder="Unesite opis dotavljaca"/>
+								</div>
+							</div>
+						</div>
+                        
+                        <div class="form-group">
+							<label for="drzaveDos" class="cols-sm-2 control-label" style="color: white;">Države i dani isporuke </label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-globe" aria-hidden="true"></i></span>
+									<input type="text"  class="form-control" name="opisDos" id="zemljaDos"  placeholder="Drzava"/>
+									<span class="input-group-addon"><i class="glyphicon glyphicon-hourglass" aria-hidden="true"></i></span>
+									<input type="text"  class="form-control" name="opisDos" id="daniDos"  placeholder="Dani"/>
+ 									<span class="input-group-addon" style="cursor: pointer;" onclick="return dodajDrzavuUCobmo()"><i class="glyphicon glyphicon-ok" aria-hidden="true"></i></span> 
+								
+								</div>
+							</div>
+						</div>
+						
+							
+	                    
+	                    
+                        <span><label  class="cols-sm-2 control-label" style="color: white;">Države - dani dostave</label></span>
+                       	<div class="form-group" id="drzaveDiv">
+                       		
+							<select id="drzaveSelect" >
+								<option>Pogledaj drzave...</option>
+								
+							</select>
+							<span>
+								<button   id="izbrisiDrzavuBtn" name="dodaj" onClick="obrisiSelektovanuDrzavu()" > 			
+								<span class="glyphicon glyphicon-remove"></span>
+								Obriši</button>
+							</span>
+						</div>
+						
+						<div class="form-group">
+							<label for="dimDos" class="cols-sm-2 control-label" style="color: white;">Unesite cene(€) za dimenzije(cena1<0.5m2; cena2<1m2;cena3>=1m2) </label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-euro" aria-hidden="true"></i></span>
+									<input type="text"  class="form-control" name="dimDos" id="dimDos"  placeholder="cena1,cena2,cena3"/>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="kgDos" class="cols-sm-2 control-label" style="color: white;">Unesite cene(€) za kilograme(cena1<1kg; cena2<5kg;cena3>=5kg) </label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-euro" aria-hidden="true"></i></span>
+									<input type="text"  class="form-control" name="kgDos" id="kgDos"  placeholder="cena1,cena2,cena3"/>
+								</div>
+							</div>
+						</div>
+						
+						<div style="text-align: center;" >
+						<button type="button" class="btn btn-success active " id="sacuvajDostavljacaBtn" name="dodaj" onClick="sacuvajDodajIzmeniDos(this)" > 			
+							<span class="glyphicon glyphicon-ok"></span>
+						Sačuvaj</button>
+						</div>	
+      </div>
+      
+    </div>
+    
+<!--     ZALBE  -->
+    <div class="container" id="zalbeDiv" style="background: transparent;border: 0px;">
+    	<div class="alert alert-danger" id="zalbePrazne">Nema žalbi za prikaz...</div>
+    	<table class="rules" id="tabelaZalbe">
+        <thead>
+          <tr>
+            <th width="10%">
+              Šifra<br>kupovine
+            </th>
+            <th width="10%">
+              Šifra<br>kupca
+            </th>
+            <th width="25%">
+              Opis žalbe
+            </th>
+            <th width="7%">
+              Prihvati<br>žalbu
+            </th >
+            <th width="7%">
+              Odbaci<br>žalbu
+            </th>
+            
+          </tr>
+        </thead>
+        <tbody >
+          
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="7"></td>
+          </tr>
+        </tfoot>
+      </table>
+   
+    </div>
+    
+    <div class="container" id="korisniciDiv" style="background: transparent;border: 0px;">
+    	<div id="btnKorisnikDiv" class="form-inline " style="text-align: center;">	
+    		<button type="button" class="btn btn-success active" id="dodajKorisnikaBtn" onClick="dodajKorisnika(this)"> 			
+					<span class="glyphicon glyphicon-plus"></span>
+					Registruj korisnika</button>
+		</div>
+    
+    	<table class="rules" id="tabelaKorisnici">
+        <thead>
+          <tr>
+            <th width="10%">
+              Korisničko<br>ime
+            </th>
+            <th >
+              Šifra
+            </th>
+            <th >
+              Ime
+            </th>
+            <th width="10%">
+              Prezime
+            </th >
+             <th >
+              Telefon
+            </th >
+            <th>
+              Email
+            </th>
+             <th >
+              Adresa
+            </th >
+            <th >
+              Država
+            </th>
+            <th >
+              Uloga
+            </th>
+            <th width="8%">
+              Brisanje
+            </th>
+            
+          </tr>
+        </thead>
+        <tbody >
+          
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="7"></td>
+          </tr>
+        </tfoot>
+      </table>
+    
+    
+    <div id="dodajKorisnikaDiv" class="main-login main-center" style="background: transparent; width: 400px;border: 0px;">
+    					<div class="form-group">
+							<label for="korisnickoIme" class="cols-sm-2 control-label" style="color: white;">Korisničko ime</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-user" aria-hidden="true"></i></span>
+									<input type="text" onfocus="sakrijGreskuReg()" class="form-control" name="korisnickoIme" id="korisnickoIme"  placeholder="Unesite Vaše korisničko ime"/>
+								</div>
+							</div>
+						</div>
+                        
+                        <div class="form-group">
+							<label for="sifra" class="cols-sm-2 control-label" style="color: white;">Lozinka</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-lock" aria-hidden="true"></i></span>
+									<input type="password" onfocus="sakrijGreskuReg()" class="form-control" name="sifra" id="sifra"  placeholder="Unesite Vašu lozinku"/>
+								</div>
+							</div>
+						</div>
+                        
+                        <label  class="cols-sm-2 control-label" style="color: white;">Uloga </label>
+                       	<div class="form-group" id="ulogaDiv" >  
+							<select id="ulogaSelect" style="width: 250px;">
+								<option value="Kupac">Kupac</option>
+								<option value="Prodavac">Prodavac</option>
+								<option value="Admin">Admin</option>
+							</select>
+						</div>
+                        
+						<div class="form-group">
+							<label for="ime" class="cols-sm-2 control-label" style="color: white;">Ime</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-user" aria-hidden="true"></i></span>
+									<input type="text" onfocus="sakrijGreskuReg()" class="form-control" name="ime" id="ime"  placeholder="Unesite Vaše ime"/>
+								</div>
+							</div>
+						</div>
+                        
+                        <div class="form-group">
+							<label for="prezime" class="cols-sm-2 control-label" style="color: white;">Prezime</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-user" aria-hidden="true"></i></span>
+									<input type="text" onfocus="sakrijGreskuReg()" class="form-control" name="prezime" id="prezime"  placeholder="Unesite Vaše prezime"/>
+								</div>
+							</div>
+						</div>
+                        
+                        <div class="form-group">
+							<label for="telefon" class="cols-sm-2 control-label" style="color: white;">Telefon</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-phone" aria-hidden="true"></i></span>
+									<input type="number" onfocus="sakrijGreskuReg()" class="form-control" name="telefon" id="telefon"  placeholder="Unesite Vaš telefon"/>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="email" class="cols-sm-2 control-label" style="color: white;">Email</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-envelope" aria-hidden="true"></i></span>
+									<input type="email" onfocus="sakrijGreskuReg()" class="form-control" name="email" id="email"  placeholder="Unesite Vaš email"/>
+								</div>
+							</div>
+						</div>
+                        
+                        <div class="form-group">
+							<label for="adresa" class="cols-sm-2 control-label" style="color: white;">Adresa</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-home" aria-hidden="true"></i></span>
+									<input type="text"  onfocus="sakrijGreskuReg()" class="form-control" name="adresa" id="adresa"  placeholder="Unesite Vašu adresu"/>
+								</div>
+							</div>
+						</div>
+
+                        <div class="form-group">
+							<label for="drzava" class="cols-sm-2 control-label" style="color: white;">Država</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-globe" aria-hidden="true"></i></span>
+									<input type="text" onfocus="sakrijGreskuReg()" class="form-control" name="drzava" id="drzava"  placeholder="Unesite Vašu državu"/>
+								</div>
+							</div>
+						</div>
+						
+						<div id="greskaReg">
+							<label for="greskaReg" style="color: red;" >Unete vrednosti nisu validne!<br>Pokušajte ponovo.</label>
+						</div>
+	
+
+						<div class="form-group ">
+							<button type="button" onclick="return validacijaReg()" class="btn btn-primary btn-lg btn-block login-button" >Registruj</button>
+						</div>
+  
+    </div>
+</div>
+</body>
+</html>

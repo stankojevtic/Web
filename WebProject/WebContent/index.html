@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head> 
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta content="text/html" charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css">
+		
+
+		
+
+		<link href="css/jquery.toastmessage.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" type="text/css" href="indexCSS1.css">
+		<title>E-commerce</title>
+        <script type="text/javascript" src="js/jquery-2.1.4.min.js"> </script>
+        <script type="text/javascript" src="js/logReg.js"> </script>
+        <script src="js/jquery.toastmessage.js" type="text/javascript"></script>
+       
+        <script>
+             $(document).ready(function()
+	           {
+            	
+            	proveraLogovanja();
+            	
+                $("#registerForm").hide();
+                $("#greskaReg").hide();
+                $("#greskaLogin").hide();
+               });
+        </script>
+        
+        
+		
+        
+	</head>
+	<body>
+        
+		<div class="container" >
+			<div class="row main">
+				<div class="panel-heading">
+	               <div class="panel-title">
+	               		<h1 class="title" style="color: black;">E-commerce poslovanje</h1>
+	               	</div>
+	            </div> 
+				<div class="main-login main-center">
+				
+					<form class="form-horizontal" method="get" id="registerForm"  action="#">
+							
+                        <div class="form-group">
+							<label for="korisnickoIme" class="cols-sm-2 control-label">Username</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									
+									<input type="text" onfocus="sakrijGreskuReg()" class="form-control" name="korisnickoIme" id="korisnickoIme"  />
+								</div>
+							</div>
+						</div>
+                        
+                        <div class="form-group">
+							<label for="sifra" class="cols-sm-2 control-label">Password</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									
+									<input type="password" onfocus="sakrijGreskuReg()" class="form-control" name="sifra" id="sifra"  />
+								</div>
+							</div>
+						</div>
+                        
+						<div class="form-group">
+							<label for="ime" class="cols-sm-2 control-label">Name</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									
+									<input type="text" onfocus="sakrijGreskuReg()" class="form-control" name="ime" id="ime" />
+								</div>
+							</div>
+						</div>
+                        
+                        <div class="form-group">
+							<label for="prezime" class="cols-sm-2 control-label">Surname</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									
+									<input type="text" onfocus="sakrijGreskuReg()" class="form-control" name="prezime" id="prezime"  />
+								</div>
+							</div>
+						</div>
+                        
+                        <div class="form-group">
+							<label for="telefon" class="cols-sm-2 control-label">Phone</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									
+									<input type="number" onfocus="sakrijGreskuReg()" class="form-control" name="telefon" id="telefon" />
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="email" class="cols-sm-2 control-label">E-mail</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									
+									<input type="email" onfocus="sakrijGreskuReg()" class="form-control" name="email" id="email" />
+								</div>
+							</div>
+						</div>
+                        
+                        <div class="form-group">
+							<label for="adresa" class="cols-sm-2 control-label">Adress</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									
+									<input type="text"  onfocus="sakrijGreskuReg()" class="form-control" name="adresa" id="adresa"  />
+								</div>
+							</div>
+						</div>
+
+                        <div class="form-group">
+							<label for="drzava" class="cols-sm-2 control-label">Country</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									
+									<input type="text" onfocus="sakrijGreskuReg()" class="form-control" name="drzava" id="drzava"  />
+								</div>
+							</div>
+						</div>
+						
+						<div id="greskaReg">
+							<label for="greskaReg" style="color: red;">Unete vrednosti nisu validne!</label>
+						</div>
+						
+
+						
+
+						<div class="form-group ">
+							<button type="button" onclick="return validacijaReg()" class="btn btn-primary login-button" >Register</button>
+						</div>
+						<div class="login-register" style="cursor: pointer;">
+				            <a  onclick="prikaziLogin()">Login</a>
+				         </div>
+					</form>
+                    
+                    <form class="form-horizontal" method="get" id="loginForm" action="#">
+						<div class="form-group">
+							<label for="korisnickoImeLogin"  class="cols-sm-2 control-label">Username</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									
+									<input type="text" onfocus="sakrijGreskuLogin()" class="form-control" name="korisnickoImeLogin" id="korisnickoImeLogin"/>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="sifraLogin" class="cols-sm-2 control-label">Password</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<input type="password" onfocus="sakrijGreskuLogin()" class="form-control" name="sifraLogin" id="sifraLogin"  />
+								</div>
+							</div>
+						</div>
+
+						<div id="greskaLogin">
+							<label for="greskaLogin" style="color: red;">Korisnik nije registrovan ili šifra nije zadovoljavajuća.</label>
+						</div>
+						
+
+						<div class="form-group ">
+							<button type="button" onclick="return validacijaLogin()"  class="btn btn-primary login-button" >Login</button>
+						</div>
+						<div class="login-register">
+				            <a onclick="prikaziReg()">Register</a>
+				         </div>
+					</form>
+                    
+                    
+                    
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
+	</body>
+</html>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>Kupovina</title>
+    
+     <link rel="stylesheet" href="css/korisnik.css">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet"  href="css/racun.css">
+    
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/jquery.toastmessage.js" type="text/javascript"></script>
+    
+    <script type="text/javascript" src="js/korisnik.js"></script>
+    <link href="css/jquery.toastmessage.css" rel="stylesheet" type="text/css" />
+   
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css">
+	
+   <link rel="stylesheet" type="text/css" href="css/starCSS.css">
+    
+    
+    
+   <style type="text/css">
+   		#odjavaBtn {  
+			margin-top: 17px;
+			margin-right: 10px;
+			float : right;
+    		width: 110px;
+		}
+		#odjavaBtn2 {  
+			margin-top: 1px;
+			margin-left: 10px;
+			float : left;
+    		width: 110px;
+		}
+		#tabelaDiv {
+			margin-left : 1px;
+		
+		}
+		th {
+			color: blue;
+		}
+		
+   </style>
+      <script>
+        $(document).ready(function()
+	    {
+        	proveraLogin();
+        	popuniTabeluProizvoda();
+        	
+        	popuniTabeluProizvodaKorpe();
+        	popuniTabeluZelja();
+        	popuniTabeluIstorijat();
+        	
+            $("#tabelaDiv").show();
+            $("#korpaDiv").hide();
+            $("#listaDiv").hide();
+            $("#istorijaDiv").hide();
+            $("#nalogDiv").hide();
+            sakrijGreskuReg();
+            
+        });
+        
+      </script>
+  </head>
+
+  <body>
+   <div class="form-group">
+   		<span id="odjavaBtn">
+   			
+			<button type="button" id="btnOdjava" name="false" class="btn btn-primary" onclick="odjava()">
+				<span class="glyphicon glyphicon-log-out">
+				</span>
+				Logout 
+			</button>
+			
+			<strong><span id="korisnikNaslov"></span></strong>
+			
+			<button type="button" id="btnNalog" name="false" class="btn btn-primary"   onclick="nalog()">
+				<span class="glyphicon glyphicon-cog">
+				</span>
+				Nalog
+			</button>
+		</span>
+	</div >
+	
+  
+    <nav id="nav-2">
+      <a class="link-3" onclick="prikaziTabele()" >Proizvodi</a>
+      <a class="link-3" onclick="prikaziKorpu()">Korpa</a>
+      <a class="link-3" onclick="prikaziListu()">Lista želja</a>
+      <a class="link-3" onclick="prikaziIstorijuKupovine()">Istorija kupovine</a>
+    </nav>
+      
+     <div class="container" id="listaDiv" style="background: transparent;border: 0px;">
+     	<div id="listaZeljaPrazna" class="alert alert-danger">Lista zelja je prazna.</div>
+     	<table class="rules" id="tabelaListaZelja">
+	        <thead>
+	          <tr>
+	            <th>
+	              <u>Šifra proizvoda</u>
+	            </th>
+	            <th>
+	             <u> Naziv proizvoda</u>
+	            </th>
+	            <th  width="70px">
+              		<u>Naziv proizvođača</u>
+            	</th>
+	             <th>
+	              <u>Kategorija proizvoda</u>
+	            </th>
+	            <th>
+	             <u> Prodavnica</u>
+	            </th>
+	             <th width="65px">
+	              <u>Cena</u>
+	            </th>
+	            <th width="90px">
+	              <u>Količina </u>
+	            </th>
+	            <th>
+	              <u>Popust</u>
+	            </th>
+	            <th >
+	             <u> Kupovina</u>
+	            </th>
+	            <th >
+	              <u>Lista želja</u>
+	            </th>
+	          </tr>
+	        </thead>
+	      	 <tbody>
+	       	</tbody>
+	        <tfoot>
+	          <tr>
+	            <td colspan="8"></td>
+	          </tr>
+	        </tfoot>
+	      </table>
+     </div>
+   
+    <div class="container" id="tabelaDiv" style="background: transparent;border: 0px;">
+    	<div id="divPretragaProizvoda">
+			
+				<div style="color:black;">
+						<input type="checkbox" id="cbNaziv" value="Naziv "> Naziv </br>
+						<input type="checkbox" selected="removeAttr()" id="cbKolicina" value="Količina"> Kolicina u magacinu </br>
+						<input type="checkbox" id="cbKategorija" value="Kategorija"> Kategorija </br>
+						<input type="checkbox" id="cbZemlja" value="Zemlja"> Zemlja proizvodnje </br>
+						<input type="checkbox" id="cbOcena" value="Ocena"> Ocena </br>
+						<input type="checkbox" id="cbBoja" value="Boja"> Boja </br>
+						<input type="checkbox" id="cbBrojRecenzija" value="BrojRecenzija"> Broj recenzija </br>
+					
+				</div>
+				<div  style="color:black;">
+					
+					<span ><u>Cena</u> od:</span> 	<input type="text" id="proizvodCenaOd" >
+					<span > do:</span>			<input type="text" id="proizvodCenaDo"> 
+					
+				</div >	
+				<div style="color:black;"> 
+				
+					<span ></br>Pretrazite po selektovanoj vrednosti:</span><input type="text" id="ostaloPretraga">	
+						<button type="button" class="btn btn-default" onClick="pretragaProizvodi()" id="btnPretragaKN"> 	
+						<span class="glyphicon glyphicon-search"></span></button>	
+						</br>
+						</br>
+					
+				</div>
+				
+			</div>
+      <table class="rules" id="tabelaPrikaz">
+        <thead >
+          <tr>
+            <th>
+              <u>Šifra proizvoda</u>
+            </th>
+            <th>
+             <u> Naziv proizvoda</u>
+            </th>
+            <th>
+             <u> Naziv proizvođača</u>
+            </th>
+            <th>
+             <u> Kategorija proizvoda</u>
+            </th>
+            <th>
+             <u> Prodavnica</u>
+            </th>
+             <th>
+             <u> Cena</u>
+            </th>
+            <th width="80px">
+             <u> Popust</u>
+            </th>
+             <th>
+             <u> Količina u magacinu</u>
+            </th>
+            <th>
+             <u> Količina </u>
+            </th>
+            <th>
+              <u>Naruči</u>
+            </th>
+          </tr>
+        </thead>
+        <tbody >
+          
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="7"></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+	
+      <div class="container" id="korpaDiv" style="background: transparent;border: 0px;">
+	  <div id="korpaPrazna" class="alert alert-danger">Korpa je prazna.</div>
+	      <table class="rules" id="tabelaKorpa">
+	        <thead>
+	          <tr >
+	            <th>
+	             <u> Šifra proizvoda</u>
+	            </th>
+	            <th>
+	              <u>Naziv proizvoda</u>
+	            </th>
+	            <th >
+	              <u>Cena</u>
+	            </th>
+	            <th>
+	             <u> Količina </u>
+	            </th>
+	            <th>
+	             <u> Cena sa popustom</u> <br>(ukoliko postoji)
+	            </th>
+	            <th>
+	              <u>Izaberi dostavu </u>
+	            </th>
+	            <th>
+	              <u>Cena dostave </u>
+	            </th>
+	            <th >
+	              <u>Kupovina</u>
+	            </th>
+	          </tr>
+	        </thead>
+	      	 <tbody>
+	       	</tbody>
+	        <tfoot>
+	          <tr>
+	            <td colspan="7"></td>
+	          </tr>
+	        </tfoot>
+	      </table>
+	      
+	       <div id="korpaDugmici" class="col-sm-12" >
+				
+								
+				
+				
+					<button type="button" onClick="kupi()" id="btnKupi">
+						<span class="glyphicon glyphicon-shopping-cart"></span>Kupi 
+					</button>
+				
+									 
+					<button type="button" onClick="otkaziKupovinu()" id="btnOtkazi">
+						<span class="glyphicon glyphicon-remove"></span>Otkaži kupovinu 
+					</button>
+			</div>
+				<div id="divRacun" class="centriran col-sm-12">
+				<section id="content">
+			     <div class="alert alert-info" id="istorijaPrazna">Kupovina uspesna.</div>
+				</section>
+		    </div>
+    
+   	</div>
+    
+    <div class="container" id="istorijaDiv" style="background: transparent;border: 0px;">
+    	   <div id="poljaZaKupovine"> 
+    	   </div>
+			
+	       <div class="alert alert-danger" id="istorijaPrazna">Ne postoji istorija kupovine.</div>
+   	</div>
+   	
+   	<div class="container" id="nalogDiv">
+   		<div  >
+    	 		<div class="form-group">
+							<label for="korisnickoIme" class="cols-sm-2 control-label">Username</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									
+									<input type="text" onfocus="sakrijGreskuReg()" class="form-control" name="korisnickoIme" id="korisnickoIme" />
+								</div>
+							</div>
+						</div>
+                        
+                        <div class="form-group">
+							<label for="sifra" class="cols-sm-2 control-label">Lozinka</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									
+									<input type="text" onfocus="sakrijGreskuReg()" class="form-control" name="sifra" id="sifra" />
+								</div>
+							</div>
+						</div>
+                        
+						<div class="form-group">
+							<label for="ime" class="cols-sm-2 control-label">Ime</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									
+									<input type="text" onfocus="sakrijGreskuReg()" class="form-control" name="ime" id="ime" />
+								</div>
+							</div>
+						</div>
+                        
+                        <div class="form-group">
+							<label for="prezime" class="cols-sm-2 control-label">Surname</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									
+									<input type="text" onfocus="sakrijGreskuReg()" class="form-control" name="prezime" id="prezime"/>
+								</div>
+							</div>
+						</div>
+                        
+                        <div class="form-group">
+							<label for="telefon" class="cols-sm-2 control-label">Phone</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									
+									<input type="number" onfocus="sakrijGreskuReg()" class="form-control" name="telefon" id="telefon" />
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="email" class="cols-sm-2 control-label">E-mail</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									
+									<input type="email" onfocus="sakrijGreskuReg()" class="form-control" name="email" id="email" />
+								</div>
+							</div>
+						</div>
+                        
+                        <div class="form-group">
+							<label for="adresa" class="cols-sm-2 control-label">Adress</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									
+									<input type="text"  onfocus="sakrijGreskuReg()" class="form-control" name="adresa" id="adresa" />
+								</div>
+							</div>
+						</div>
+
+                        <div class="form-group">
+							<label for="drzava" class="cols-sm-2 control-label">Country</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+								
+									<input type="text" onfocus="sakrijGreskuReg()" class="form-control" name="drzava" id="drzava"/>
+								</div>
+							</div>
+						</div>
+						
+						<div id="greskaReg">
+							<label for="greskaReg" style="color: red;">Unete vrednosti nisu validne!<br>Pokusajte ponovo.</label>
+						</div>
+						
+
+						
+
+						<div class="form-group ">
+							<button type="button" onclick="return validacijaReg()" >Update</button>
+						</div>
+						
+			</div>
+	</div>
+ 
+  </body>
+</html>
+
